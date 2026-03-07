@@ -12,4 +12,12 @@ class CriarUsuarioSchema(BaseModel):
     admin : bool | None = False
     
     
+class LoginSchema(BaseModel):
+    
+    model_config = ConfigDict(from_attributes=True)
+    
+    email: str
+    senha: str
+    
+    
         
