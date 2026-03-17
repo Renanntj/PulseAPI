@@ -15,3 +15,9 @@ class PublicacaoSchema(PublicacaoBase):
     autor: AutorSchema
 
     model_config = ConfigDict(from_attributes=True) 
+
+class EditarPost(BaseModel):
+    model_config = ConfigDict(from_attributes=True) 
+    
+    titulo: Optional[str] = None
+    descricao: Optional[str] = None

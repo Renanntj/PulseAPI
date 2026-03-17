@@ -19,5 +19,12 @@ class LoginSchema(BaseModel):
     email: str
     senha: str
     
+class EditarUsuario(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    nome : Optional[str] = None
+    usuario : Optional[str] = None
+     
+    
     
         

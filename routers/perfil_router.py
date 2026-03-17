@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from schemas.usuario import CriarUsuarioSchema, LoginSchema
+from schemas.usuario import CriarUsuarioSchema, LoginSchema, EditarUsuario
 from fastapi import HTTPException, Depends, status
 from dependecies.dependecies import abrir_sessao, verificar_token
 from sqlalchemy.orm import Session
@@ -13,7 +13,7 @@ from datetime import timedelta
 
 router_user = APIRouter(prefix="/user", tags=["user"])
 
-# criçao de user para exemplo, por enquanto so um teste, sem login
+
 
 @router_user.post("/criar-usuario", status_code=status.HTTP_201_CREATED)
 async def criar_user(usuario_schema: CriarUsuarioSchema, session: Session = Depends(abrir_sessao)): # criar usuario
@@ -83,3 +83,23 @@ async def refresh_roter_auth(user: Session = Depends(verificar_token)):
     return {"access_token": access_token,
             "token_type": "Bearer"
         }
+
+@router_user.patch("/editar-perfil")
+async def editar_perfil(dados_editados: EditarUsuario,  session: Session = Depends(abrir_sessao), user_id: int = Depends(verificar_token)):
+    
+    user = user = user_id
+    for campo, valor in dados_editados.dict(exclude_unset=True).items():
+        setattr(user, campo, valor)
+    update_data = dados_editados.dict(exclude_unset=True)
+    
+    try:
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=500, detail="Erro ao atualizar perfil")
+    return {
+        "user_id": user.id,
+        "dados_editados": update_data
+    }
