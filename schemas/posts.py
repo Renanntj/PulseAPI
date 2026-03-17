@@ -2,7 +2,10 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 class AutorSchema(BaseModel):
-    usuario: str 
+    id: int
+    nome: str
+    usuario: str
+
     model_config = ConfigDict(from_attributes=True)
 
 class PublicacaoBase(BaseModel):
@@ -12,9 +15,10 @@ class PublicacaoBase(BaseModel):
 
 class PublicacaoSchema(PublicacaoBase):
     id: int
+    autor_id: int
     autor: Optional[AutorSchema] = None
 
-    model_config = ConfigDict(from_attributes=True) 
+    model_config = ConfigDict(from_attributes=True)
 
 class EditarPost(BaseModel):
     model_config = ConfigDict(from_attributes=True) 

@@ -24,4 +24,4 @@ app.include_router(router_posts)
 
 @app.get("/")
 def home():
-    return {"status": "API de Publicações online", "v": "1.0.0"}
+    return {"status": "PulseAPI online", "v": "1.0.0"}
