@@ -12,7 +12,7 @@ class PublicacaoBase(BaseModel):
 
 class PublicacaoSchema(PublicacaoBase):
     id: int
-    autor: AutorSchema
+    autor: Optional[AutorSchema] = None
 
     model_config = ConfigDict(from_attributes=True) 
 
