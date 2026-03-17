@@ -1,5 +1,20 @@
 import pytest
 
+
+def test_ver_perfil_de_usuario(client):  
+    payload = {
+        "nome": "Renan",
+        "usuario": "renan",
+        "email": "renan@gmail.com",
+        "senha": "123teste",
+    }
+
+    client.post("user/criar-usuario/", json=payload)    
+    
+    response = client.get(f"user/ver-perfil/{payload['usuario']}/")
+    
+    assert response.status_code == 200
+
 def test_criar_usuario_com_dados_validos(client): # testa criação de usuario com dados validos  
     payload = {
         "nome": "Renan",
@@ -36,4 +51,6 @@ def test_criar_usuario_com_username_invalido(client):
     response = client.post("user/criar-usuario", json=payload)
     
     assert response.status_code == 400
+    
+
     
