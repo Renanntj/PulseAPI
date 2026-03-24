@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from fastapi import HTTPException, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from dependecies.dependecies import abrir_sessao, verificar_token
@@ -68,4 +68,39 @@ async def editar_post(
         "mensagem": "Post atualizado com sucesso",
         "post_id": post.id,
         "campos_alterados": list(update_data.keys())
+    }
+
+@router_posts.post("/{publicacao_id}/like")
+async def dar_like(
+    publicacao_id: int, 
+    db: Session = Depends(abrir_sessao),
+    usuario_atual: User = Depends(verificar_token)
+):
+    
+    publicacao = db.query(Publicacoes).filter(Publicacoes.id == publicacao_id).first()
+    
+    if not publicacao:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Publicação não encontrada"
+        )
+
+    # Verifica se o usuário já está na lista de quem curtiu
+    if usuario_atual in publicacao.curtidas_por:
+        # Se já curtiu, removemos a relação (Descurtir)
+        publicacao.curtidas_por.remove(usuario_atual)
+        acao = "removido"
+    else:
+        # Se não curtiu, adicionamos a relação (Curtir)
+        publicacao.curtidas_por.append(usuario_atual)
+        acao = "adicionado"
+
+    db.commit()
+    
+    total_de_likes = len(publicacao.curtidas_por)
+
+    return {
+        "mensagem": f"Like {acao} com sucesso",
+        "total_likes": total_de_likes,
+        "curtido_pelo_usuario": acao == "adicionado" # Retorna True se curtiu, False se tirou
     }

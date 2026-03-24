@@ -2,7 +2,7 @@ from models.models import Base, user_games_association
 from sqlalchemy import Column, String, Integer, DateTime, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-
+from models.associations import likes_association
 
 
 
@@ -23,6 +23,12 @@ class User(Base):
     jogos = relationship("Jogos", secondary=user_games_association, back_populates="usuarios")
     publicacoes = relationship("Publicacoes", back_populates="autor")
     
+    
+    posts_curtidos = relationship(
+        "Publicacoes", 
+        secondary=likes_association, 
+        back_populates="curtidas_por"
+    )
     def __init__(self, nome, usuario, email, senha, admin=False):
         self.nome = nome
         self.usuario = usuario

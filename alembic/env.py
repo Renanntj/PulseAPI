@@ -3,16 +3,17 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 
-from models.models import Base, DATABASE_URL
+from models.models import Base, db, user_games_association
 from models.models_user import User
 from models.models_jogos import Jogos
 from models.models_post import Publicacoes
+from models.associations import likes_association
 
 
 config = context.config
 
 
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+config.set_main_option("sqlalchemy.url", db)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

@@ -1,7 +1,7 @@
 from models.models import Base
 from sqlalchemy import Column, String, Integer, LargeBinary, ForeignKey
 from sqlalchemy.orm import relationship
-
+from models.associations import likes_association
 class Publicacoes(Base):
     __tablename__ = "publicacoes"
     
@@ -12,6 +12,10 @@ class Publicacoes(Base):
     autor_id = Column(Integer, ForeignKey("usuario.id"), nullable=False)
     autor = relationship("User", back_populates="publicacoes")
     # likes
-    # comentarios
-    # Compartilhamentos
+    
+    curtidas_por = relationship(
+        "User", 
+        secondary=likes_association, 
+        back_populates="posts_curtidos"
+    )
     
